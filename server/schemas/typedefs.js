@@ -1,4 +1,4 @@
-const typeDefs = `
+const typeDefs = `#graphql
   type User {
     _id: ID!
     username: String!
@@ -10,7 +10,7 @@ const typeDefs = `
   type Book {
     bookId: String!
     authors: [String]
-    description: String!
+    description: String
     title: String!
     image: String
     link: String
@@ -24,7 +24,7 @@ const typeDefs = `
   input BookInput {
     bookId: String!
     authors: [String]
-    description: String!
+    description: String
     title: String!
     image: String
     link: String
