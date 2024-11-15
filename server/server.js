@@ -2,9 +2,10 @@ const express = require("express");
 const { ApolloServer } = require("@apollo/server");
 const { expressMiddleware } = require("@apollo/server/express4");
 const path = require("path");
+
+const { typeDefs, resolvers } = require("./schemas");
 const { authMiddleware } = require("./utils/auth");
 const db = require("./config/connection");
-const { typeDefs, resolvers } = require("./schemas");
 
 const PORT = process.env.PORT || 3001;
 const app = express();
@@ -12,6 +13,10 @@ const app = express();
 const server = new ApolloServer({
   typeDefs,
   resolvers,
+  formatError: (error) => {
+    console.log("GraphQL Error:", error);
+    return error;
+  },
 });
 
 const startApolloServer = async () => {
@@ -43,4 +48,6 @@ const startApolloServer = async () => {
   });
 };
 
-startApolloServer();
+startApolloServer().catch((error) => {
+  console.error("Error starting server:", error);
+});
