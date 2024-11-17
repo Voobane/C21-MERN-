@@ -11,9 +11,9 @@ const SignupForm = () => {
   const [validated] = useState(false);
   // set state for alert
   const [showAlert, setShowAlert] = useState(false);
+  const [errorMessage, setErrorMessage] = useState('');
 
-  // use mutation
-  const [addUser] = useMutation(ADD_USER);
+  const [addUser, { error }] = useMutation(ADD_USER);
 
   const handleInputChange = (event) => {
     const { name, value } = event.target;
@@ -36,10 +36,10 @@ const SignupForm = () => {
         variables: { ...userFormData }
       });
 
-      console.log(data);
       Auth.login(data.addUser.token);
     } catch (err) {
-      console.error(err);
+      console.error('Signup error:', err);
+      setErrorMessage(err.message.replace('GraphQL error: ', '')); // Remove GraphQL error prefix
       setShowAlert(true);
     }
 
@@ -55,8 +55,13 @@ const SignupForm = () => {
       {/* This is needed for the validation functionality above */}
       <Form noValidate validated={validated} onSubmit={handleFormSubmit}>
         {/* show alert if server response is bad */}
-        <Alert dismissible onClose={() => setShowAlert(false)} show={showAlert} variant='danger'>
-          Something went wrong with your signup!
+        <Alert 
+          dismissible 
+          onClose={() => setShowAlert(false)} 
+          show={showAlert} 
+          variant='danger'
+        >
+          {errorMessage || 'Something went wrong with your signup!'}
         </Alert>
 
         <Form.Group className='mb-3'>
