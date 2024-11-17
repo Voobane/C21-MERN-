@@ -2,9 +2,8 @@ const express = require("express");
 const { ApolloServer } = require("@apollo/server");
 const { expressMiddleware } = require("@apollo/server/express4");
 const path = require("path");
-
-const { typeDefs, resolvers } = require("./schemas");
 const { authMiddleware } = require("./utils/auth");
+const { typeDefs, resolvers } = require("./schemas");
 const db = require("./config/connection");
 
 const PORT = process.env.PORT || 3001;
@@ -14,7 +13,7 @@ const server = new ApolloServer({
   typeDefs,
   resolvers,
   formatError: (error) => {
-    console.log("GraphQL Error:", error);
+    console.error("GraphQL Error:", error);
     return error;
   },
 });
@@ -25,6 +24,7 @@ const startApolloServer = async () => {
   app.use(express.urlencoded({ extended: true }));
   app.use(express.json());
 
+  // Set up Apollo Server middleware with CORS enabled
   app.use(
     "/graphql",
     expressMiddleware(server, {
@@ -32,6 +32,7 @@ const startApolloServer = async () => {
     })
   );
 
+  // Serve static assets in production
   if (process.env.NODE_ENV === "production") {
     app.use(express.static(path.join(__dirname, "../client/dist")));
 
@@ -49,5 +50,5 @@ const startApolloServer = async () => {
 };
 
 startApolloServer().catch((error) => {
-  console.error("Error starting server:", error);
+  console.error("Server startup error:", error);
 });
