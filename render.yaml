@@ -1,6 +1,6 @@
 services:
   - type: web
-    name: mern-book-search
+    name: book-search
     env: node
     buildCommand: npm install && cd client && npm install && npm run build && cd ../server && npm install
     startCommand: cd server && npm start
@@ -9,3 +9,4 @@ services:
         value: production
       - key: MONGODB_URI
         sync: false
+    nodeVersion: 18.x
